@@ -37,6 +37,30 @@ const studentController = {
     try {
       const { name, registration, cpf, phone, address, userId } = req.body;
 
+      if (!userId) {
+        return res.status(400).json({ message: "userId e obrigatorio" });
+      }
+
+      const user = await User.findByPk(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "Usuario informado nao existe" });
+      }
+
+      if (user.role !== "aluno") {
+        return res.status(400).json({
+          message: "O userId informado precisa pertencer a um usuario com papel aluno",
+        });
+      }
+
+      const existingStudentForUser = await Student.findOne({ where: { userId } });
+
+      if (existingStudentForUser) {
+        return res.status(409).json({
+          message: "Este usuario ja esta vinculado a um aluno",
+        });
+      }
+
       const student = await Student.create({
         name,
         registration,
