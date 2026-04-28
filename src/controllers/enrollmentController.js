@@ -1,6 +1,54 @@
 import Enrollment from "../models/Enrollment.js";
 import Student from "../models/Student.js";
 import Class from "../models/Class.js";
+import handleControllerError from "../utils/handleControllerError.js";
+
+async function validateEnrollmentPayload({ studentId, classId }) {
+  if (studentId === undefined || studentId === null) {
+    return {
+      status: 400,
+      body: { message: "studentId e obrigatorio" },
+    };
+  }
+
+  if (classId === undefined || classId === null) {
+    return {
+      status: 400,
+      body: { message: "classId e obrigatorio" },
+    };
+  }
+
+  const student = await Student.findByPk(studentId);
+
+  if (!student) {
+    return {
+      status: 404,
+      body: { message: "Aluno informado nao existe" },
+    };
+  }
+
+  const classe = await Class.findByPk(classId);
+
+  if (!classe) {
+    return {
+      status: 404,
+      body: { message: "Turma informada nao existe" },
+    };
+  }
+
+  const existingEnrollment = await Enrollment.findOne({
+    where: { studentId, classId },
+  });
+
+  if (existingEnrollment) {
+    return {
+      status: 409,
+      body: { message: "Este aluno ja esta matriculado nesta turma" },
+    };
+  }
+
+  return null;
+}
 
 const enrollmentController = {
   // Listar todas as inscrições
@@ -14,7 +62,7 @@ const enrollmentController = {
       });
       return res.json(enrollments);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -35,7 +83,7 @@ const enrollmentController = {
 
       return res.json(enrollment);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -43,6 +91,11 @@ const enrollmentController = {
   create: async (req, res) => {
     try {
       const { studentId, classId, status } = req.body;
+      const validationError = await validateEnrollmentPayload({ studentId, classId });
+
+      if (validationError) {
+        return res.status(validationError.status).json(validationError.body);
+      }
 
       const enrollment = await Enrollment.create({
         studentId,
@@ -55,7 +108,7 @@ const enrollmentController = {
         enrollment,
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -78,7 +131,7 @@ const enrollmentController = {
         enrollment,
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -97,7 +150,7 @@ const enrollmentController = {
 
       return res.json({ message: "Inscricao deletada com sucesso" });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 };

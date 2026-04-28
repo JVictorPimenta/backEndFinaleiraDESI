@@ -14,8 +14,20 @@ const Enrollment = sequelize.define("Enrollment", {
   },
 });
 
-Enrollment.belongsTo(Student, { foreignKey: "studentId", onDelete: "CASCADE" });
-Enrollment.belongsTo(Class, { foreignKey: "classId", onDelete: "CASCADE" });
+Enrollment.belongsTo(Student, {
+  foreignKey: {
+    name: "studentId",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
+});
+Enrollment.belongsTo(Class, {
+  foreignKey: {
+    name: "classId",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
+});
 Student.hasMany(Enrollment, { foreignKey: "studentId" });
 Class.hasMany(Enrollment, { foreignKey: "classId" });
 

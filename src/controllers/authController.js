@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import handleControllerError from "../utils/handleControllerError.js";
 
 const SECRET = process.env.JWT_SECRET || "segredo";
 
@@ -13,19 +14,14 @@ function resolveUserRole(email) {
   return adminEmails.includes(email.toLowerCase()) ? "admin" : "aluno";
 }
 
-const authController = {
-  register: async (req, res) => {
-    try {
-      const { email, password } = req.body;
-
-      const existingUser = await User.findOne({ where: { email } });
+async function createUser({ email, password, role }) {
+  const existingUser = await User.findOne({ where: { email } });
 
       if (existingUser) {
-        return res.status(409).json({ message: "Email ja cadastrado" });
+        return { error: { status: 409, body: { message: "Email ja cadastrado" } } };
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const role = resolveUserRole(email);
 
       const user = await User.create({
         email,
@@ -33,16 +29,51 @@ const authController = {
         role,
       });
 
-      return res.status(201).json({
+  return {
+    user,
+    body: {
         message: "Usuario criado",
         user: {
           id: user.id,
           email: user.email,
           role: user.role,
         },
+    },
+  };
+}
+
+const authController = {
+  register: async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const role = resolveUserRole(email);
+      const result = await createUser({ email, password, role });
+
+      if (result.error) {
+        return res.status(result.error.status).json(result.error.body);
+      }
+
+      return res.status(201).json(result.body);
+    } catch (error) {
+      return handleControllerError(res, error);
+    }
+  },
+
+  registerProfessor: async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const result = await createUser({ email, password, role: "professor" });
+
+      if (result.error) {
+        return res.status(result.error.status).json(result.error.body);
+      }
+
+      return res.status(201).json({
+        message: "Professor criado com sucesso",
+        user: result.body.user,
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -78,7 +109,7 @@ const authController = {
         token,
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 };

@@ -1,5 +1,32 @@
 import Class from "../models/Class.js";
 import User from "../models/User.js";
+import handleControllerError from "../utils/handleControllerError.js";
+
+async function validateProfessorId(professorId) {
+  if (professorId === undefined || professorId === null) {
+    return null;
+  }
+
+  const professor = await User.findByPk(professorId);
+
+  if (!professor) {
+    return {
+      status: 404,
+      body: { message: "Professor informado nao existe" },
+    };
+  }
+
+  if (professor.role !== "professor") {
+    return {
+      status: 400,
+      body: {
+        message: "O professorId informado precisa pertencer a um usuario com papel professor",
+      },
+    };
+  }
+
+  return null;
+}
 
 const classController = {
   // Listar todas as turmas
@@ -10,7 +37,7 @@ const classController = {
       });
       return res.json(classes);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -28,7 +55,7 @@ const classController = {
 
       return res.json(classe);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -36,6 +63,11 @@ const classController = {
   create: async (req, res) => {
     try {
       const { name, description, schedule, room, professorId } = req.body;
+      const validationError = await validateProfessorId(professorId);
+
+      if (validationError) {
+        return res.status(validationError.status).json(validationError.body);
+      }
 
       const classe = await Class.create({
         name,
@@ -50,7 +82,7 @@ const classController = {
         class: classe,
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -59,11 +91,16 @@ const classController = {
     try {
       const { id } = req.params;
       const { name, description, schedule, room, professorId } = req.body;
+      const validationError = await validateProfessorId(professorId);
 
       const classe = await Class.findByPk(id);
 
       if (!classe) {
         return res.status(404).json({ message: "Turma nao encontrada" });
+      }
+
+      if (validationError) {
+        return res.status(validationError.status).json(validationError.body);
       }
 
       await classe.update({
@@ -98,7 +135,7 @@ const classController = {
 
       return res.json({ message: "Turma deletada com sucesso" });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 };

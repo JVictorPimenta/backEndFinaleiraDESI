@@ -1,6 +1,7 @@
 import Grade from "../models/Grade.js";
 import Student from "../models/Student.js";
 import Class from "../models/Class.js";
+import handleControllerError from "../utils/handleControllerError.js";
 
 const gradeController = {
   // Listar todas as notas
@@ -14,7 +15,7 @@ const gradeController = {
       });
       return res.json(grades);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -35,7 +36,7 @@ const gradeController = {
 
       return res.json(grade);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -56,7 +57,7 @@ const gradeController = {
         grade,
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -79,7 +80,7 @@ const gradeController = {
         grade,
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -98,7 +99,7 @@ const gradeController = {
 
       return res.json({ message: "Nota deletada com sucesso" });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 };

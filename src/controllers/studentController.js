@@ -1,5 +1,6 @@
 import Student from "../models/Student.js";
 import User from "../models/User.js";
+import handleControllerError from "../utils/handleControllerError.js";
 
 const studentController = {
   // Listar todos os alunos
@@ -10,7 +11,7 @@ const studentController = {
       });
       return res.json(students);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -28,7 +29,7 @@ const studentController = {
 
       return res.json(student);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -75,7 +76,7 @@ const studentController = {
         student,
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -104,7 +105,7 @@ const studentController = {
         student,
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 
@@ -123,7 +124,7 @@ const studentController = {
 
       return res.json({ message: "Aluno deletado com sucesso" });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return handleControllerError(res, error);
     }
   },
 };
