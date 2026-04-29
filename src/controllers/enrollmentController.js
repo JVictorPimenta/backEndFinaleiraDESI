@@ -23,7 +23,7 @@ async function validateEnrollmentPayload({ studentId, classId }) {
   if (!student) {
     return {
       status: 404,
-      body: { message: "Aluno informado nao existe" },
+      body: { message: "Aluno informado não existe" },
     };
   }
 
@@ -32,7 +32,7 @@ async function validateEnrollmentPayload({ studentId, classId }) {
   if (!classe) {
     return {
       status: 404,
-      body: { message: "Turma informada nao existe" },
+      body: { message: "Turma informada não existe" },
     };
   }
 
@@ -43,7 +43,7 @@ async function validateEnrollmentPayload({ studentId, classId }) {
   if (existingEnrollment) {
     return {
       status: 409,
-      body: { message: "Este aluno ja esta matriculado nesta turma" },
+      body: { message: "Este aluno já está matriculado nesta turma" },
     };
   }
 
@@ -78,7 +78,7 @@ const enrollmentController = {
       });
 
       if (!enrollment) {
-        return res.status(404).json({ message: "Inscricao nao encontrada" });
+        return res.status(404).json({ message: "Inscrição não encontrada" });
       }
 
       return res.json(enrollment);
@@ -104,7 +104,7 @@ const enrollmentController = {
       });
 
       return res.status(201).json({
-        message: "Inscricao criada com sucesso",
+        message: "Inscrição criada com sucesso",
         enrollment,
       });
     } catch (error) {
@@ -121,13 +121,13 @@ const enrollmentController = {
       const enrollment = await Enrollment.findByPk(id);
 
       if (!enrollment) {
-        return res.status(404).json({ message: "Inscricao nao encontrada" });
+        return res.status(404).json({ message: "Inscrição não encontrada" });
       }
 
       await enrollment.update({ status });
 
       return res.json({
-        message: "Inscricao atualizada com sucesso",
+        message: "Inscrição atualizada com sucesso",
         enrollment,
       });
     } catch (error) {
@@ -143,12 +143,12 @@ const enrollmentController = {
       const enrollment = await Enrollment.findByPk(id);
 
       if (!enrollment) {
-        return res.status(404).json({ message: "Inscricao nao encontrada" });
+        return res.status(404).json({ message: "Inscrição não encontrada" });
       }
 
       await enrollment.destroy();
 
-      return res.json({ message: "Inscricao deletada com sucesso" });
+      return res.json({ message: "Inscrição deletada com sucesso" });
     } catch (error) {
       return handleControllerError(res, error);
     }

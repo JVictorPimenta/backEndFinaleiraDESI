@@ -12,7 +12,7 @@ async function validateProfessorId(professorId) {
   if (!professor) {
     return {
       status: 404,
-      body: { message: "Professor informado nao existe" },
+      body: { message: "Professor informado não existe" },
     };
   }
 
@@ -20,7 +20,7 @@ async function validateProfessorId(professorId) {
     return {
       status: 400,
       body: {
-        message: "O professorId informado precisa pertencer a um usuario com papel professor",
+        message: "O professorId informado precisa pertencer a um usuário com papel professor",
       },
     };
   }
@@ -50,7 +50,7 @@ const classController = {
       });
 
       if (!classe) {
-        return res.status(404).json({ message: "Turma nao encontrada" });
+        return res.status(404).json({ message: "Turma não encontrada" });
       }
 
       return res.json(classe);
@@ -96,7 +96,7 @@ const classController = {
       const classe = await Class.findByPk(id);
 
       if (!classe) {
-        return res.status(404).json({ message: "Turma nao encontrada" });
+        return res.status(404).json({ message: "Turma não encontrada" });
       }
 
       if (validationError) {
@@ -128,7 +128,7 @@ const classController = {
       const classe = await Class.findByPk(id);
 
       if (!classe) {
-        return res.status(404).json({ message: "Turma nao encontrada" });
+        return res.status(404).json({ message: "Turma não encontrada" });
       }
 
       await classe.destroy();

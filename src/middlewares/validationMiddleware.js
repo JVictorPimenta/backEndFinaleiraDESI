@@ -3,7 +3,7 @@ function validationMiddleware(req, res, next) {
   
   if (errors && errors.length > 0) {
     return res.status(400).json({
-      message: "Erro de validacao",
+      message: "Erro de validação",
       errors: errors.map(err => ({
         field: err.path,
         message: err.msg,

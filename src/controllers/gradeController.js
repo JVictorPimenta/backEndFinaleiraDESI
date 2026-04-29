@@ -31,7 +31,7 @@ const gradeController = {
       });
 
       if (!grade) {
-        return res.status(404).json({ message: "Nota nao encontrada" });
+        return res.status(404).json({ message: "Nota não encontrada" });
       }
 
       return res.json(grade);
@@ -70,7 +70,7 @@ const gradeController = {
       const grade = await Grade.findByPk(id);
 
       if (!grade) {
-        return res.status(404).json({ message: "Nota nao encontrada" });
+        return res.status(404).json({ message: "Nota não encontrada" });
       }
 
       await grade.update({ score, semester });
@@ -92,7 +92,7 @@ const gradeController = {
       const grade = await Grade.findByPk(id);
 
       if (!grade) {
-        return res.status(404).json({ message: "Nota nao encontrada" });
+        return res.status(404).json({ message: "Nota não encontrada" });
       }
 
       await grade.destroy();

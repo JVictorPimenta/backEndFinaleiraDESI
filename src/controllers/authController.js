@@ -18,7 +18,7 @@ async function createUser({ email, password, role }) {
   const existingUser = await User.findOne({ where: { email } });
 
       if (existingUser) {
-        return { error: { status: 409, body: { message: "Email ja cadastrado" } } };
+        return { error: { status: 409, body: { message: "Email já cadastrado" } } };
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -32,7 +32,7 @@ async function createUser({ email, password, role }) {
   return {
     user,
     body: {
-        message: "Usuario criado",
+        message: "Usuário criado",
         user: {
           id: user.id,
           email: user.email,
@@ -84,7 +84,7 @@ const authController = {
       const user = await User.findOne({ where: { email } });
 
       if (!user) {
-        return res.status(404).json({ message: "Usuario nao encontrado" });
+        return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
       const validPassword = await bcrypt.compare(password, user.password);

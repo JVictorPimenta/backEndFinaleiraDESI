@@ -24,7 +24,7 @@ const studentController = {
       });
 
       if (!student) {
-        return res.status(404).json({ message: "Aluno nao encontrado" });
+        return res.status(404).json({ message: "Aluno não encontrado" });
       }
 
       return res.json(student);
@@ -45,12 +45,12 @@ const studentController = {
       const user = await User.findByPk(userId);
 
       if (!user) {
-        return res.status(404).json({ message: "Usuario informado nao existe" });
+        return res.status(404).json({ message: "Usuário informado não existe" });
       }
 
       if (user.role !== "aluno") {
         return res.status(400).json({
-          message: "O userId informado precisa pertencer a um usuario com papel aluno",
+          message: "O userId informado precisa pertencer a um usuário com papel aluno",
         });
       }
 
@@ -58,7 +58,7 @@ const studentController = {
 
       if (existingStudentForUser) {
         return res.status(409).json({
-          message: "Este usuario ja esta vinculado a um aluno",
+          message: "Este usuário já está vinculado a um aluno",
         });
       }
 
@@ -89,7 +89,7 @@ const studentController = {
       const student = await Student.findByPk(id);
 
       if (!student) {
-        return res.status(404).json({ message: "Aluno nao encontrado" });
+        return res.status(404).json({ message: "Aluno não encontrado" });
       }
 
       await student.update({
@@ -117,7 +117,7 @@ const studentController = {
       const student = await Student.findByPk(id);
 
       if (!student) {
-        return res.status(404).json({ message: "Aluno nao encontrado" });
+        return res.status(404).json({ message: "Aluno não encontrado" });
       }
 
       await student.destroy();

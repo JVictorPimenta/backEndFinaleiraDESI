@@ -18,7 +18,7 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    return callback(Object.assign(new Error("Origem nao permitida pelo CORS"), {
+    return callback(Object.assign(new Error("Origem não permitida pelo CORS"), {
       status: 403,
     }));
   },

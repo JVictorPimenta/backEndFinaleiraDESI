@@ -7,7 +7,7 @@ function mapSequelizeErrors(error) {
     return {
       status: 400,
       body: {
-        message: "Erro de validacao",
+        message: "Erro de validação",
         error: error.message,
         details: error.errors?.map((item) => ({
           field: item.path,
