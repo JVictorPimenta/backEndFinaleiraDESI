@@ -20,6 +20,7 @@ import "./models/Grade.js";
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+// Luiz Esteve Aqui
 app.use(cors(corsOptions));
 app.use(json());
 
