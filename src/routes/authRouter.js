@@ -5,7 +5,12 @@ import roleMiddleware from "../middlewares/roleMiddleware.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/register", authController.register);
+authRouter.post(
+  "/register",
+  authMiddleware,
+  roleMiddleware(["admin"]),
+  authController.register
+);
 authRouter.post(
   "/register-professor",
   authMiddleware,

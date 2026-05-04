@@ -1,4 +1,5 @@
 import Class from "../models/Class.js";
+import Discipline from "../models/Discipline.js";
 import User from "../models/User.js";
 import handleControllerError from "../utils/handleControllerError.js";
 
@@ -33,7 +34,10 @@ const classController = {
   getAll: async (req, res) => {
     try {
       const classes = await Class.findAll({
-        include: { model: User, attributes: ["id", "email"], as: "User" },
+        include: [
+          { model: User, attributes: ["id", "email"], as: "User" },
+          { model: Discipline },
+        ],
       });
       return res.json(classes);
     } catch (error) {
@@ -46,7 +50,10 @@ const classController = {
     try {
       const { id } = req.params;
       const classe = await Class.findByPk(id, {
-        include: { model: User, attributes: ["id", "email"], as: "User" },
+        include: [
+          { model: User, attributes: ["id", "email"], as: "User" },
+          { model: Discipline },
+        ],
       });
 
       if (!classe) {

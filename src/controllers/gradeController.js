@@ -1,7 +1,30 @@
 import Grade from "../models/Grade.js";
 import Student from "../models/Student.js";
 import Class from "../models/Class.js";
+import Discipline from "../models/Discipline.js";
 import handleControllerError from "../utils/handleControllerError.js";
+
+async function validateGradePayload({ studentId, disciplineId }) {
+  const student = await Student.findByPk(studentId);
+
+  if (!student) {
+    return {
+      status: 404,
+      body: { message: "Aluno informado nao existe" },
+    };
+  }
+
+  const discipline = await Discipline.findByPk(disciplineId);
+
+  if (!discipline) {
+    return {
+      status: 404,
+      body: { message: "Disciplina informada nao existe" },
+    };
+  }
+
+  return null;
+}
 
 const gradeController = {
   // Listar todas as notas
@@ -10,7 +33,7 @@ const gradeController = {
       const grades = await Grade.findAll({
         include: [
           { model: Student },
-          { model: Class },
+          { model: Discipline, include: [{ model: Class }] },
         ],
       });
       return res.json(grades);
@@ -26,7 +49,7 @@ const gradeController = {
       const grade = await Grade.findByPk(id, {
         include: [
           { model: Student },
-          { model: Class },
+          { model: Discipline, include: [{ model: Class }] },
         ],
       });
 
@@ -43,11 +66,16 @@ const gradeController = {
   // Criar nota
   create: async (req, res) => {
     try {
-      const { studentId, classId, score, semester } = req.body;
+      const { studentId, disciplineId, score, semester } = req.body;
+      const validationError = await validateGradePayload({ studentId, disciplineId });
+
+      if (validationError) {
+        return res.status(validationError.status).json(validationError.body);
+      }
 
       const grade = await Grade.create({
         studentId,
-        classId,
+        disciplineId,
         score,
         semester,
       });
@@ -65,7 +93,7 @@ const gradeController = {
   update: async (req, res) => {
     try {
       const { id } = req.params;
-      const { score, semester } = req.body;
+      const { score, semester, disciplineId } = req.body;
 
       const grade = await Grade.findByPk(id);
 
@@ -73,7 +101,17 @@ const gradeController = {
         return res.status(404).json({ message: "Nota não encontrada" });
       }
 
-      await grade.update({ score, semester });
+      const nextDisciplineId = disciplineId ?? grade.disciplineId;
+      const validationError = await validateGradePayload({
+        studentId: grade.studentId,
+        disciplineId: nextDisciplineId,
+      });
+
+      if (validationError) {
+        return res.status(validationError.status).json(validationError.body);
+      }
+
+      await grade.update({ score, semester, disciplineId: nextDisciplineId });
 
       return res.json({
         message: "Nota atualizada com sucesso",

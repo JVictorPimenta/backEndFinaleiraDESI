@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/sqlConnection.js";
 import Student from "./Student.js";
-import Class from "./Class.js";
+import Discipline from "./Discipline.js";
 
 const Grade = sequelize.define("Grade", {
   score: {
@@ -19,8 +19,8 @@ const Grade = sequelize.define("Grade", {
 });
 
 Grade.belongsTo(Student, { foreignKey: "studentId", onDelete: "CASCADE" });
-Grade.belongsTo(Class, { foreignKey: "classId", onDelete: "CASCADE" });
+Grade.belongsTo(Discipline, { foreignKey: "disciplineId", onDelete: "CASCADE" });
 Student.hasMany(Grade, { foreignKey: "studentId" });
-Class.hasMany(Grade, { foreignKey: "classId" });
+Discipline.hasMany(Grade, { foreignKey: "disciplineId" });
 
 export default Grade;

@@ -9,7 +9,7 @@ const enrollmentRouter = express.Router();
 enrollmentRouter.get("/", authMiddleware, enrollmentController.getAll);
 enrollmentRouter.get("/:id", authMiddleware, enrollmentController.getById);
 
-// Rotas protegidas (apenas admin)
+// Rotas protegidas (apenas admin gerencia matriculas)
 enrollmentRouter.post("/", authMiddleware, roleMiddleware(["admin"]), enrollmentController.create);
 enrollmentRouter.put("/:id", authMiddleware, roleMiddleware(["admin"]), enrollmentController.update);
 enrollmentRouter.delete("/:id", authMiddleware, roleMiddleware(["admin"]), enrollmentController.delete);
